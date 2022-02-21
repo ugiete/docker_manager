@@ -1,5 +1,6 @@
 import 'package:app/components/layouts/default.dart';
 import 'package:app/components/ui/input.dart';
+import 'package:app/components/ui/switch_option.dart';
 import 'package:flutter/material.dart';
 
 class SettingsPage extends StatefulWidget {
@@ -12,6 +13,7 @@ class SettingsPage extends StatefulWidget {
 class _SettingsPageState extends State<SettingsPage> {
   final TextEditingController hostCtrl = TextEditingController();
   final TextEditingController userCtrl = TextEditingController();
+  final TextEditingController portCtrl = TextEditingController();
 
   @override
   Widget build(BuildContext context) {
@@ -55,8 +57,14 @@ class _SettingsPageState extends State<SettingsPage> {
                     label: 'Port',
                     hint: '2376',
                     width: 100.0,
-                    controller: userCtrl),
-              ]))
+                    controller: portCtrl),
+              ])),
+          const Padding(
+            padding: EdgeInsets.only(top: 40.0),
+            child: Text('Preferences',
+                style: TextStyle(fontSize: 22.0, fontWeight: FontWeight.bold)),
+          ),
+          const SwitchOption(label: 'Light Theme', initialValue: true)
         ]));
   }
 }

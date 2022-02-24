@@ -7,13 +7,13 @@ import 'package:flutter/material.dart';
 
 class DefaultLayout extends StatelessWidget {
   final String title;
-  final body;
+  final Widget body;
   final bool backPath;
   final int currentMenu;
-  final action;
-  final floatButton;
+  final Widget? action;
+  final Widget? floatButton;
 
-  DefaultLayout(
+  const DefaultLayout(
       {required this.title,
       required this.body,
       required this.currentMenu,
@@ -23,10 +23,16 @@ class DefaultLayout extends StatelessWidget {
       Key? key})
       : super(key: key);
 
+  void onNavigate(BuildContext context, String path, Object? arguments) {
+    Navigator.of(context).pushNamed(path, arguments: arguments);
+  }
+
   @override
   build(BuildContext context) {
     return Scaffold(
-      appBar: const AppHeader(),
+      appBar: AppHeader(
+          onNavigate: (String path, {Object? arguments}) =>
+              onNavigate(context, path, arguments)),
       body: Row(
         children: [
           AppSideBarMenu(

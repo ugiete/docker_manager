@@ -1,3 +1,5 @@
+import 'package:app/app/utils.dart';
+import 'package:app/components/pages/home/edit-service/edit_service.dart';
 import 'package:flutter/material.dart';
 
 class ItemData {
@@ -8,7 +10,9 @@ class ItemData {
 }
 
 class AppHeader extends StatelessWidget implements PreferredSizeWidget {
-  const AppHeader({Key? key}) : super(key: key);
+  final void Function(String path, {Object? arguments}) onNavigate;
+
+  const AppHeader({required this.onNavigate, Key? key}) : super(key: key);
 
   void exit(BuildContext context) {
     showTimePicker(context: context, initialTime: TimeOfDay.now());
@@ -21,7 +25,9 @@ class AppHeader extends StatelessWidget implements PreferredSizeWidget {
       color: Theme.of(context).appBarTheme.backgroundColor,
       child: Row(children: [
         HeaderItem(label: 'Arquivo', data: [
-          ItemData('Novo serviço', () => print('new-service-path')),
+          ItemData('Novo serviço', () {
+            onNavigate(EditServicePage.newRoute);
+          }),
           ItemData('Sair', () {
             exit(context);
           }),
@@ -75,6 +81,48 @@ class HeaderItem extends StatelessWidget {
               }),
         ),
       ),
+    );
+  }
+}
+
+class PageHeader extends StatelessWidget {
+  final String title;
+  final bool backPath;
+  final Widget? action;
+
+  const PageHeader(
+      {required this.title, this.backPath = false, this.action, Key? key})
+      : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return Column(
+      mainAxisSize: MainAxisSize.min,
+      children: [
+        Row(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          children: [
+            Row(
+              mainAxisAlignment: MainAxisAlignment.start,
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                backPath
+                    ? IconButton(
+                        onPressed: () {
+                          Navigator.of(context).maybePop();
+                        },
+                        icon: const Icon(Icons.keyboard_arrow_left))
+                    : Container(),
+                Text(title,
+                    style: const TextStyle(
+                        fontSize: 36.0, fontWeight: FontWeight.bold)),
+              ],
+            ),
+            action ?? Container()
+          ],
+        ),
+        const Divider()
+      ],
     );
   }
 }

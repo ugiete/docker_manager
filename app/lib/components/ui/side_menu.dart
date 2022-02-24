@@ -22,10 +22,13 @@ class AppSideBarMenu extends StatelessWidget {
       child: Column(
         children: data
             .map((MenuData item) => IconButton(
-                onPressed: () => print(item.path),
+                onPressed: () {
+                  Navigator.of(context).pushReplacementNamed(item.path);
+                },
                 icon: Icon(
                   item.icon,
-                  color: item.selected ? Colors.greenAccent : Colors.grey,
+                  color:
+                      item.selected ? Colors.greenAccent : Colors.grey.shade200,
                 )))
             .toList(),
       ),

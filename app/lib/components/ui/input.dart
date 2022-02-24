@@ -5,14 +5,14 @@ class LabeledInput extends StatelessWidget {
   final String hint;
   final double width;
   final bool enabled;
-  final TextEditingController controller;
+  final TextEditingController? controller;
 
   const LabeledInput(
       {required this.label,
       required this.hint,
       required this.width,
       this.enabled = true,
-      required this.controller,
+      this.controller,
       Key? key})
       : super(key: key);
 

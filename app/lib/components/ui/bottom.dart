@@ -1,28 +1,26 @@
+import 'package:app/bloc/conn/conn_bloc.dart';
+import 'package:app/models/conn.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 
 class InfoData {
-  final String host;
-  final bool serviceActive;
   final int servicesRunning;
   final bool hasNotifications;
 
-  InfoData(this.host, this.serviceActive, this.servicesRunning,
-      this.hasNotifications);
+  InfoData(this.servicesRunning, this.hasNotifications);
 }
 
 class AppBottom extends StatelessWidget {
   final InfoData data;
-  final bool loading;
 
-  const AppBottom({required this.data, this.loading = false, Key? key})
-      : super(key: key);
+  const AppBottom({required this.data, Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
     return Column(
       mainAxisSize: MainAxisSize.min,
       children: [
-        loading ? const LinearProgressIndicator() : Container(),
+        //cond ? const LinearProgressIndicator() : Container(),
         Container(
           padding: const EdgeInsets.symmetric(horizontal: 10.0),
           color:
@@ -31,7 +29,7 @@ class AppBottom extends StatelessWidget {
           child: Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
-              HostStatus(data.host, data.serviceActive),
+              const HostStatus(),
               ServicesStatus(data.servicesRunning, data.hasNotifications)
             ],
           ),
@@ -42,28 +40,28 @@ class AppBottom extends StatelessWidget {
 }
 
 class HostStatus extends StatelessWidget {
-  final String host;
-  final bool serviceActive;
-
-  const HostStatus(this.host, this.serviceActive, {Key? key}) : super(key: key);
+  const HostStatus({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
-    return Row(
-      mainAxisSize: MainAxisSize.min,
-      children: [
-        Tooltip(
-            message: serviceActive ? 'Serviço Ativo' : 'Serviço Parado',
-            child: Icon(Icons.circle,
-                size: 14.0,
-                color: serviceActive ? Colors.greenAccent : Colors.redAccent)),
-        Padding(
-          padding: const EdgeInsets.only(left: 10.0),
-          child:
-              Text(host, style: const TextStyle(fontWeight: FontWeight.bold)),
-        )
-      ],
-    );
+    return BlocBuilder<ConnectionBloc, Connection>(
+        builder: (BuildContext context, Connection state) {
+      return Row(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          Tooltip(
+              message: state.active ? 'Serviço Ativo' : 'Serviço Parado',
+              child: Icon(Icons.circle,
+                  size: 14.0,
+                  color: state.active ? Colors.greenAccent : Colors.redAccent)),
+          Padding(
+            padding: const EdgeInsets.only(left: 10.0),
+            child: Text(state.host,
+                style: const TextStyle(fontWeight: FontWeight.bold)),
+          )
+        ],
+      );
+    });
   }
 }
 

@@ -1,0 +1,14 @@
+[Unit]
+Description=Ugiete's Docker manager
+
+After=network.target
+StartLimitIntervalSec=0
+
+[Service]
+Type=simple
+Restart=always
+RestartSec=1s
+ExecStart=/usr/bin/python3 /home/etpi/Documentos/docker_manager/server/main.py
+
+[Install]
+WantedBy=multi-user.target

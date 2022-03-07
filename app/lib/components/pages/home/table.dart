@@ -3,9 +3,14 @@ import 'package:flutter/material.dart';
 
 class ContainersTable extends StatelessWidget {
   final List<String> columns;
-  final List<ServiceModel> rows;
+  final List<Service> rows;
+  final bool isLoading;
 
-  const ContainersTable({required this.columns, this.rows = const [], Key? key})
+  const ContainersTable(
+      {required this.columns,
+      this.rows = const [],
+      this.isLoading = true,
+      Key? key})
       : super(key: key);
 
   @override
@@ -19,10 +24,10 @@ class ContainersTable extends StatelessWidget {
             .map((String label) => DataColumn(label: Text(label)))
             .toList(),
         rows: rows
-            .map((ServiceModel service) => DataRow(cells: [
+            .map((Service service) => DataRow(cells: [
                   DataCell(Text(service.containerID)),
                   DataCell(Text(service.name)),
-                  DataCell(Text(service.ports)),
+                  DataCell(Text(service.parsePort)),
                   DataCell(Text(service.status)),
                   DataCell(Text(service.createdAt)),
                   DataCell(IconButton(

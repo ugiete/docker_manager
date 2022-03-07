@@ -6,6 +6,8 @@ class LabeledInput extends StatelessWidget {
   final double width;
   final bool enabled;
   final TextEditingController? controller;
+  final void Function(String)? onChange;
+  final String? initialValue;
 
   const LabeledInput(
       {required this.label,
@@ -13,6 +15,8 @@ class LabeledInput extends StatelessWidget {
       required this.width,
       this.enabled = true,
       this.controller,
+      this.onChange,
+      this.initialValue,
       Key? key})
       : super(key: key);
 
@@ -29,10 +33,15 @@ class LabeledInput extends StatelessWidget {
         ),
         SizedBox(
           width: width,
-          child: TextField(
+          child: TextFormField(
+              initialValue: initialValue,
               controller: controller,
               enabled: enabled,
+              onChanged:
+                  onChange == null ? null : (String value) => onChange!(value),
               decoration: InputDecoration(
+                  fillColor: enabled ? null : Colors.grey.shade200,
+                  filled: !enabled,
                   hintText: hint,
                   border: const OutlineInputBorder(),
                   contentPadding: const EdgeInsets.symmetric(
@@ -40,6 +49,46 @@ class LabeledInput extends StatelessWidget {
                   isDense: true)),
         )
       ],
+    );
+  }
+}
+
+class ClearInput extends StatelessWidget {
+  final String hint;
+  final double width;
+  final bool enabled;
+  final TextEditingController? controller;
+  final void Function(String)? onChange;
+  final String? initialValue;
+
+  const ClearInput(
+      {required this.hint,
+      required this.width,
+      this.enabled = true,
+      this.controller,
+      this.onChange,
+      this.initialValue,
+      Key? key})
+      : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return SizedBox(
+      width: width,
+      child: TextFormField(
+          initialValue: initialValue,
+          controller: controller,
+          enabled: enabled,
+          onChanged:
+              onChange == null ? null : (String value) => onChange!(value),
+          decoration: InputDecoration(
+              fillColor: enabled ? null : Colors.grey.shade200,
+              filled: !enabled,
+              hintText: hint,
+              border: const OutlineInputBorder(),
+              contentPadding:
+                  const EdgeInsets.symmetric(horizontal: 10.0, vertical: 14.0),
+              isDense: true)),
     );
   }
 }

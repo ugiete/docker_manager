@@ -1,6 +1,7 @@
 import 'package:app/bloc/conn/conn_bloc.dart';
-import 'package:app/bloc/conn/conn_state.dart';
+import 'package:app/bloc/conn/conn_events.dart';
 import 'package:app/components/layouts/default.dart';
+import 'package:app/components/ui/image_button.dart';
 import 'package:app/components/ui/input.dart';
 import 'package:app/components/ui/switch_option.dart';
 import 'package:app/models/conn.dart';
@@ -26,7 +27,7 @@ class SettingsPage extends StatelessWidget {
   Widget build(BuildContext context) {
     return DefaultLayout(
         title: 'Settings',
-        currentMenu: 1,
+        currentMenu: 2,
         action: BlocBuilder<ConnectionBloc, Connection>(
             builder: (BuildContext context, Connection state) {
           return ElevatedButton(
@@ -64,7 +65,11 @@ class SettingsPage extends StatelessWidget {
                     style:
                         TextStyle(fontSize: 22.0, fontWeight: FontWeight.bold)),
               ),
-              const SwitchOption(label: 'Light Theme', initialValue: true)
+              const SwitchOption(label: 'Light Theme', initialValue: true),
+              const Padding(
+                padding: EdgeInsets.only(top: 40.0),
+                child: I18nPanel(),
+              )
             ]));
   }
 }
@@ -93,5 +98,38 @@ class ConnectionEditPanel extends StatelessWidget {
       LabeledInput(
           label: 'Port', hint: '2376', width: 100.0, controller: portCtrl),
     ]);
+  }
+}
+
+class I18nPanel extends StatelessWidget {
+  const I18nPanel({Key? key}) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        const Text('Internationalization',
+            style: TextStyle(fontSize: 22.0, fontWeight: FontWeight.bold)),
+        Padding(
+          padding: const EdgeInsets.only(top: 10.0),
+          child: Row(
+            children: [
+              ImageButton(
+                  image: const AssetImage('assets/flags/brazil.png'),
+                  onTap: () => print('olá'),
+                  size: const Size(70.0, 70.0)),
+              Padding(
+                padding: const EdgeInsets.only(left: 10.0),
+                child: ImageButton(
+                    image: const AssetImage('assets/flags/usa.png'),
+                    onTap: () => print('olá'),
+                    size: const Size(70.0, 70.0)),
+              )
+            ],
+          ),
+        ),
+      ],
+    );
   }
 }

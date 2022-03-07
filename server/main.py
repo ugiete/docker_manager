@@ -6,25 +6,37 @@ import json
 HOST = 'localhost'
 PORT = 65432
 
-def check_docker_status() -> bytes:
+def check_docker_status(label: str) -> bytes:
     try:
         subprocess.check_output('systemctl status docker', shell=True)
-        return '1'.encode()
+        return format_response(label, True)
     except:
-        return '0'.encode()
+        return format_response(label, False)
 
-def process_service() -> DockerService:
-    pass
-
-def list_services() -> bytes:
+def list_services(label: str) -> bytes:
     try:
         ps = subprocess.check_output('docker ps --format "@{{.ID}}\t@{{.Names}}\t@{{.Status}}\t@{{.Ports}}\t@{{.CreatedAt}}"', shell=True)
         services_data = ps.decode().strip().split('\n')
         services = [DockerService(data).serialize() for data in services_data]
-        return json.dumps(services).encode()
+        return format_response(label, services)
     except Exception as e:
-        return f'[]'.encode()
+        return format_response(label, [])
 
+def list_images(label: str) -> bytes:
+    try:
+        ps = subprocess.check_output("docker image ls | awk '!/none/' | awk '{print($1, $2)}'", shell=True)
+        images = ps.decode().strip().split('\n')[1:]
+        return format_response(label, images)
+    except Exception as e:
+        return format_response(label, [])
+
+def format_response(label: str, data) -> bytes:
+    response = {
+        "label": label,
+        "data": data
+    }
+
+    return json.dumps(response).encode()
 
 if __name__ == '__main__':
     with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as sock:
@@ -34,7 +46,6 @@ if __name__ == '__main__':
         conn, addr = sock.accept()
 
         with conn:
-            print(f'Connected by {addr}')
             while True:
                 data = conn.recv(1024)
 
@@ -44,6 +55,8 @@ if __name__ == '__main__':
                 cmd = data.decode('ascii').strip().upper()
 
                 if cmd == 'STATUS':
-                    conn.sendall(check_docker_status())
+                    conn.sendall(check_docker_status(cmd))
                 elif cmd == 'LIST':
-                    conn.sendall(list_services())
+                    conn.sendall(list_services(cmd))
+                elif cmd == 'IMAGES':
+                    conn.sendall(list_images(cmd))

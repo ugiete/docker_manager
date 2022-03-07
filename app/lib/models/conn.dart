@@ -1,6 +1,6 @@
 class Connection {
   String host;
-  bool active = false;
+  bool? active;
   String? username;
   int? port;
 
